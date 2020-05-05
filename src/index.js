@@ -17,11 +17,13 @@ export default function (moduleOptions) {
     // Add polyfill plugins:
     options.features.forEach(feature => {
         
+        const requireAsArray = Array.isArray(feature.require) ? feature.require : [feature.require];
+
         const params = {
-            require: feature.require,
+            require: requireAsArray,
             log: options.log,
             include: typeof feature.detect === 'function' ? feature.include || false : true,
-            name: feature.name || (Array.isArray(require) ? require.join(',') : feature.require.toString())
+            name: feature.name || requireAsArray.join(',')
         };
 
         if (typeof feature.detect === 'function') {

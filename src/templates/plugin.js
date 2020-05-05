@@ -24,24 +24,28 @@ export default () => {
     <% if (!options.include) { %>
     return new Promise((resolve, reject) => {
 
-        require.ensure([
+        require.ensure(
             <%= JSON.stringify(options.require) %>
-        ], function (require) {
+        , function (require) {
 
             <% } %>
 
-            const polyfill = require(<%= JSON.stringify(options.require) %>);
-            
             <% if (options.log) { %>
-            console.log('Load ' + <%= JSON.stringify(options.name) %>);
+                console.log('Load ' + <%= JSON.stringify(options.name) %>);
             <% } %>
-            
-            <% if (typeof options.install === 'string') { %>
-            
-            const install = <%= options.install  %>;
 
-            install(polyfill);
+            <% for (const r of options.require) { %>
+            {
 
+                const polyfill = require(<%= JSON.stringify(r) %>);
+                
+                <% if (typeof options.install === 'string') { %>
+                
+                const install = <%= options.install  %>;
+
+                install(polyfill);
+                <% } %>
+            }
             <% } %>
 
     <% if (!options.include) { %>
